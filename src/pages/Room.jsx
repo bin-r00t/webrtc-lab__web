@@ -3,6 +3,7 @@ import {
   XMarkIcon,
   SpeakerXMarkIcon,
   PlayIcon,
+  PauseIcon,
   NoSymbolIcon,
   MicrophoneIcon,
   EyeSlashIcon,
@@ -21,10 +22,34 @@ import {
   ArrowRightStartOnRectangleIcon,
   ArrowDownTrayIcon,
 } from "@heroicons/react/24/solid";
+import { useEffect, useRef } from "react";
 
 export default function Room() {
   const { roomId } = useParams();
+  const selfVideoRef = useRef();
+  const peerVideoRef = useRef();
 
+  useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((mediaStream) => {
+        console.log(
+          "mediaStream",
+          selfVideoRef.current,
+          mediaStream.getTracks()[0]
+        );
+        selfVideoRef.current.srcObject = mediaStream;
+      })
+      .catch((error) => {
+        console.error("Error accessing media devices.", error);
+      });
+  }, []);
+
+  function togglePlay() {
+    selfVideoRef.current.paused
+      ? selfVideoRef.current.play()
+      : selfVideoRef.current.pause();
+  }
   return (
     <div className="room h-full bg-gray-800 text-white flex flex-col">
       <div className="tool-bar">
@@ -34,10 +59,26 @@ export default function Room() {
         </h1>
       </div>
       <section className="main-area flex-1 flex justify-center items-center gap-10">
-        {/* <video ref={selfVideoRef} src="#"></video>
-        <video ref={peerVideoRef} src="#"></video> */}
-        <div className="bg-black w-[500px] h-[300px]"></div>
-        <div className="bg-black w-[500px] h-[300px]"></div>
+        <div className="bg-black w-[500px] h-[300px] overflow-hidden relative">
+          <video
+            id="self-video"
+            autoPlay
+            ref={selfVideoRef}
+            className="bg-blue-200 w-full"
+          ></video>
+          <button
+            onClick={togglePlay}
+            className="absolute bottom-2 right-2 w-10 h-10 bg-gray-600 transition hover:bg-gray-300 rounded-full grid place-content-center"
+          >
+            <PlayIcon className="pl-1 h-5 w-5" />
+          </button>
+        </div>
+        <div className="bg-black w-[500px] h-[300px]">
+          <video
+            ref={peerVideoRef}
+            className="bg-blue-200 w-full h-full"
+          ></video>
+        </div>
       </section>
       <div className="btn-group p-5 flex gap-5 items-center justify-center">
         <button className="record h-16 w-16 shadow-md rounded-full bg-indigo-500 grid place-content-center transition hover:scale-110">
