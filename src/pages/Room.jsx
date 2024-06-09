@@ -28,21 +28,30 @@ export default function Room() {
   const { roomId } = useParams();
   const selfVideoRef = useRef();
   const peerVideoRef = useRef();
+  const localStream = useRef();
+  const remoteStream = useRef();
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((mediaStream) => {
+    async function setup() {
+      try {
+        const mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          // audio: true,
+        });
         console.log(
           "mediaStream",
           selfVideoRef.current,
           mediaStream.getTracks()[0]
         );
-        selfVideoRef.current.srcObject = mediaStream;
-      })
-      .catch((error) => {
+        selfVideoRef.current.srcObject = localStream.current = mediaStream;
+
+        createPeerConnection(mediaStream);
+      } catch (error) {
         console.error("Error accessing media devices.", error);
-      });
+      }
+    }
+
+    setup();
   }, []);
 
   function togglePlay() {
@@ -93,4 +102,61 @@ export default function Room() {
       </div>
     </div>
   );
+}
+
+async function createPeerConnection(localStream) {
+  // const peerConnection = new RTCPeerConnection(config);
+  // peerConnection.onicecandidate = handleICECandidateEvent;
+  // peerConnection.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
+  // peerConnection.onicegatheringstatechange = handleICEGatheringStateChangeEvent;
+  // peerConnection.onsignalingstatechange = handleSignalingStateChangeEvent;
+  // peerConnection.onnegotiationneeded = handleNegotiationNeededEvent;
+  // peerConnection.ontrack = handleTrackEvent;
+  // return peerConnection;
+  let peerConfiguration = {
+    iceServers: [
+      {
+        urls: [
+          "stun:stunserver.org",
+          "stun:stun.voiparound.com",
+          "stun:stun.voipbuster.com",
+          "stun:stun.voipstunt.com",
+          "stun:stun.voxgratia.org",
+        ],
+      },
+    ],
+  };
+
+  // 1. Create a new RTCPeerConnection
+  let peerConnection = new RTCPeerConnection(peerConfiguration);
+  // 2. Add the local stream (media stream) to the peer connection
+  localStream.getTracks().forEach((track) => {
+    peerConnection.addTrack(track, localStream);
+  });
+  console.log("Added local stream to peer connection", localStream);
+  // 3. Listen for ICE candidates on the local RTCPeerConnection
+  peerConnection.addEventListener("icecandidate", (event) => {
+    // 这里的 event 是一个 RTCPeerConnectionIceEvent 对象
+    // 这里需要通过 socket.io 与 signal server 交换 iceCandidate
+    console.log("[*] One ICE candidate is ready!", event.candidate);
+    if (event.candidate) {
+      console.log("iceCandidate", event.candidate);
+    }
+  });
+  console.log("Created RTCPeerConnection", peerConnection);
+
+  try {
+    // 4. Create an offer, take this offer and send it over to the other peer
+    const offer = peerConnection.createOffer();
+    // offer is eventually an <RTCSessionDescription> object
+    console.log("Created offer", offer);
+    // 4.1 Set the offer as the local description of the peer connection
+    // This will trigger icecandidate event, line138
+    peerConnection.setLocalDescription(offer);
+
+    // 5. Set the local description of the peer connection
+    console.log("Local description set successfully");
+  } catch (error) {
+    console.error("Error creating an offer", error);
+  }
 }
