@@ -21,35 +21,36 @@ import {
   ArrowRightStartOnRectangleIcon,
   ArrowDownTrayIcon,
 } from "@heroicons/react/24/solid";
+//
 import { useEffect, useRef, useState } from "react";
+import { initWebRtc } from "../peer.tools";
+import { useDispatch, useSelector } from "react-redux";
+import { handleStartNegotiation } from "../../utils/socket";
 
-export default function Room() {
+export default function Room({ socket }) {
+  // const dispatch = useDispatch();
   const selfVideoRef = useRef();
   const peerVideoRef = useRef();
   const localStream = useRef();
   const remoteStream = useRef();
 
   useEffect(() => {
-    async function setup() {
-      try {
-        const mediaStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          // audio: true,
-        });
-        console.log(
-          "mediaStream",
-          selfVideoRef.current,
-          mediaStream.getTracks()[0]
-        );
-        selfVideoRef.current.srcObject = localStream.current = mediaStream;
+    async function prepare() {
+      // peerConnection cannot be saved to redux store
+      // dispatch(setPeerConnection(peerConnection)); is NOT allowed
+      const peerConnection = await initWebRtc({
+        ref: selfVideoRef,
+        stream: null,
+      });
+      console.log("socket", socket);
+      // TODO：此处而言， negotiation::start 注册太晚了... 在 socket.js 中注册又太早
+      socket.current.on("negotiation::start", () => {
+        console.log("start negotiation");
+      });
 
-        createPeerConnection(mediaStream);
-      } catch (error) {
-        console.error("Error accessing media devices.", error);
-      }
+      console.log('peerConnection -->', peerConnection);
     }
-
-    // setup();
+    prepare();
   }, []);
 
   function togglePlay() {

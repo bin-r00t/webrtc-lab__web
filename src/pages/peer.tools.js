@@ -23,7 +23,7 @@ function receiveAnswer(socket, answer, peerConnection) {
   peerConnection.setRemoteDescription(answer);
 }
 
-export async function initWebRtc(selfVideo, remoteVideo) {
+export async function initWebRtc(selfVideo) {
   const stream = await navigator.mediaDevices.getUserMedia({
     video: true,
     // audio: true,
@@ -51,7 +51,7 @@ export async function initWebRtc(selfVideo, remoteVideo) {
       console.log("iceCandidate", event.candidate);
     }
   });
-  const offer = await peerConnection.createOffer();
-  peerConnection.setLocalDescription(offer);
+  // const offer = await peerConnection.createOffer();
+  // peerConnection.setLocalDescription(offer);
   return peerConnection;
 }

@@ -5,6 +5,7 @@ const mediaSlice = createSlice({
   initialState: {
     localStream: null,
     remoteStreams: [],
+    peerConnection: null,
   },
   reducers: {
     setLocalStream: (state, action) => {
@@ -12,6 +13,9 @@ const mediaSlice = createSlice({
     },
     addRemoteStream: (state, action) => {
       state.remoteStreams.push(action.payload);
+    },
+    setPeerConnection: (state, action) => {
+      state.peerConnection = action.payload;
     },
   },
 });
@@ -23,4 +27,5 @@ const store = configureStore({
 });
 
 export default store;
-export const { setLocalStream, addRemoteStream } = mediaSlice.actions;
+export const { setLocalStream, addRemoteStream, setPeerConnection } =
+  mediaSlice.actions;

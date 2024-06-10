@@ -5,6 +5,9 @@ import VideoWrapper from "./VideoWrapper";
 import VideoActions from "./Actions";
 import { initSocket } from "../../utils/socket";
 import { SocketContext } from "../../App";
+// import { initWebRtc } from "../peer.tools";
+// import { useDispatch, useSelector } from "react-redux";
+// import { setPeerConnection } from "../../store/index";
 
 export default function Room() {
   const { socket, saveSocket } = useContext(SocketContext);
@@ -20,7 +23,13 @@ export default function Room() {
     if (username.value == "") {
       dialogRef.current.open();
     }
-    saveSocket(initSocket("http://localhost:8000", { token: roomId }));
+    saveSocket(initSocket("https://10.168.1.141:8000", { token: roomId }));
+
+    // async function prepare() {
+    //   const peerConnection = await initWebRtc();
+    //   dispatch(setPeerConnection(peerConnection));
+    // }
+    // prepare();
   }, []);
 
   function handleSetName() {
@@ -53,7 +62,7 @@ export default function Room() {
             <span>{username.value}</span>
           </h1>
         </div>
-        <VideoWrapper />
+        <VideoWrapper socket={socket} />
         <VideoActions />
       </div>
       <Modal

@@ -1,39 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import io from "socket.io-client";
-import { useContext } from "react";
-import { SocketContext } from "../App";
 
 export default function Entry() {
-  const { socket, saveSocket } = useContext(SocketContext);
   const codeRef = useRef("123");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  setTimeout(() => {
-    console.log("socket", socket.current?.id);
-  }, 3000);
-
   function handleJoin() {
     if (!codeRef.current.value?.trim()) return alert("Please input room ID");
     setLoading(true);
-    const socket = io("http://localhost:8000", {
-      auth: {
-        token: codeRef.current.value?.trim(),
-      },
-    });
-
-    socket.on("connect", () => {
-      console.log("connected");
+    setTimeout(() => {
       setLoading(false);
-      navigate(`/chat/${codeRef.current.value?.trim()}`);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("disconnect");
-    });
-
-    saveSocket(socket);
+    }, 1000);
+    navigate(`/chat/${codeRef.current.value?.trim()}`);
   }
   return (
     <div className="h-full grid place-content-center relative">
