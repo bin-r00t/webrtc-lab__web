@@ -11,18 +11,19 @@ export const initSocket = (url, { token }) => {
     auth: {
       token,
     },
-    autoConnect: false,
+    // autoConnect: false,
   });
 
   socket.on("connect", handleConnected);
   socket.on("disconnect", handleDisconnected);
   socket.on("error", handleError);
-  socket.on("room:join", handleJoinRoom);
+  socket.on("negotiation::start", handleStartNegotiation.bind(socket));
+  socket.on("waiting", handleWaiting.bind(socket));
   return socket;
 };
 
 function dispatch(str) {
-    return str;
+  return str;
 }
 
 function handleConnected() {
@@ -39,4 +40,14 @@ function handleError(error) {
 
 function handleJoinRoom(room) {
   console.log("join room", room);
+}
+
+function handleStartNegotiation() {
+  // <this> is socket instance
+  console.log("start negotiation", this);
+  // this.emit('offer', { type: 'offer', sdp: 'offer' });
+}
+
+function handleWaiting() {
+  console.log("waiting");
 }

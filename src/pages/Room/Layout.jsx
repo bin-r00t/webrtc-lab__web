@@ -1,10 +1,13 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import { Modal } from "../../components/Modal";
 import VideoWrapper from "./VideoWrapper";
 import VideoActions from "./Actions";
+import { initSocket } from "../../utils/socket";
+import { SocketContext } from "../../App";
 
 export default function Room() {
+  const { socket, saveSocket } = useContext(SocketContext);
   const { roomId } = useParams();
   const dialogRef = useRef();
   const nameRef = useRef();
@@ -17,6 +20,7 @@ export default function Room() {
     if (username.value == "") {
       dialogRef.current.open();
     }
+    saveSocket(initSocket("http://localhost:8000", { token: roomId }));
   }, []);
 
   function handleSetName() {
@@ -30,6 +34,10 @@ export default function Room() {
     }
     setName(() => ({ error: null, value: name }));
     dialogRef.current.close();
+    //
+    if (socket.current) {
+      socket.current.emit("user:setName", name);
+    }
   }
 
   return (
