@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App.jsx";
 import Join from "../pages/Entry.jsx";
-import Room from "../pages/Room.jsx";
+import Room from "../pages/Room/Layout.jsx";
 import GlobalErrorPage from "../pages/GlobalErrorPage.jsx";
 
 export default createBrowserRouter([
