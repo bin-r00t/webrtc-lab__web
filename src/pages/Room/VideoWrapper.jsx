@@ -26,20 +26,24 @@ import { useEffect, useRef, useState } from "react";
 import { initWebRtc } from "../peer.tools";
 import { useDispatch, useSelector } from "react-redux";
 import { handleStartNegotiation } from "../../utils/socket";
+import { useContext } from "react";
+import { GlobalContext } from "../../App";
 
-export default function Room({ socket }) {
-  // const dispatch = useDispatch();
-  const selfVideoRef = useRef();
-  const peerVideoRef = useRef();
+export default function Room({}) {
+  const { localVideoRef, remoteVideoRef, socket } = useContext(GlobalContext);
   const localStream = useRef();
   const remoteStream = useRef();
 
   useEffect(() => {
+    setTimeout(() => {
+      console.log("localVideoRef", localVideoRef.current);
+      console.log("remoteVideoRef", remoteVideoRef.current);
+    }, 2000);
     async function prepare() {
       // peerConnection cannot be saved to redux store
       // dispatch(setPeerConnection(peerConnection)); is NOT allowed
       const peerConnection = await initWebRtc({
-        ref: selfVideoRef,
+        ref: localVideoRef,
         stream: null,
       });
       console.log("socket", socket);
@@ -48,7 +52,7 @@ export default function Room({ socket }) {
         console.log("start negotiation");
       });
 
-      console.log('peerConnection -->', peerConnection);
+      console.log("peerConnection -->", peerConnection);
     }
     prepare();
   }, []);
@@ -64,7 +68,7 @@ export default function Room({ socket }) {
         <video
           id="self-video"
           autoPlay
-          ref={selfVideoRef}
+          ref={localVideoRef}
           className="bg-blue-200 w-full"
         ></video>
         <button
@@ -75,7 +79,10 @@ export default function Room({ socket }) {
         </button>
       </div>
       <div className="bg-black w-[500px] h-[300px]">
-        <video ref={peerVideoRef} className="bg-blue-200 w-full h-full"></video>
+        <video
+          ref={remoteVideoRef}
+          className="bg-blue-200 w-full h-full"
+        ></video>
       </div>
     </section>
   );

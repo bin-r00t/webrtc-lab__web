@@ -4,13 +4,13 @@ import { Modal } from "../../components/Modal";
 import VideoWrapper from "./VideoWrapper";
 import VideoActions from "./Actions";
 import { initSocket } from "../../utils/socket";
-import { SocketContext } from "../../App";
+import { GlobalContext } from "../../App";
 // import { initWebRtc } from "../peer.tools";
 // import { useDispatch, useSelector } from "react-redux";
 // import { setPeerConnection } from "../../store/index";
 
 export default function Room() {
-  const { socket, saveSocket } = useContext(SocketContext);
+  const { socket, saveSocket } = useContext(GlobalContext);
   const { roomId } = useParams();
   const dialogRef = useRef();
   const nameRef = useRef();
@@ -62,7 +62,7 @@ export default function Room() {
             <span>{username.value}</span>
           </h1>
         </div>
-        <VideoWrapper socket={socket} />
+        <VideoWrapper />
         <VideoActions />
       </div>
       <Modal

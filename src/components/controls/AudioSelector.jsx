@@ -12,10 +12,12 @@ export default function AudioSelector({ devices }) {
     (state) => state.media
   );
 
+  /** 开启关闭音频轨道 */
   function handleToggleAudio() {
     console.log("start/stop audio");
   }
 
+  /** 切换音频设备 */
   function handleChange(e) {
     const deviceId = e.target.value;
     console.log("audio deviceId", deviceId);
@@ -23,6 +25,7 @@ export default function AudioSelector({ devices }) {
     dispatch(setDevice({ type: "audio:input", value: deviceId }));
   }
 
+  /** 切换音频设备 开关 */
   function handleToggleSelection() {
     setShow((v) => !v);
   }

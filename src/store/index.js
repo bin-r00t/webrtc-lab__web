@@ -4,6 +4,7 @@ import { configureStore, createSlice } from "@reduxjs/toolkit";
 // getSenders()
 // replaceTrack()
 // getTracks()
+// setSinkId() - change audio output
 
 // Keywords:
 // Switching cameras in WebRTC

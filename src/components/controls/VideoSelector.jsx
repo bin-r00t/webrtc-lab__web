@@ -8,6 +8,7 @@ export default function VideoSelector({ devices }) {
   const [showOptions, setShow] = useState(false);
   const { videoDeviceId } = useSelector((state) => state.media);
 
+  /** 选择视频设备 */
   function handleChange(e) {
     console.log("start/stop video");
     const deviceId = e.target.value;
@@ -15,10 +16,12 @@ export default function VideoSelector({ devices }) {
     dispatch(setDevice({ type: "video", value: deviceId }));
   }
 
+  /** 开启关闭视频轨道 */
   function handleToggleVideo() {
     console.log("start/stop video");
   }
 
+  /** 选择视频设备 开关 */
   function handleToggleSelection() {
     setShow((v) => !v);
   }
