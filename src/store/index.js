@@ -1,5 +1,5 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
-import { createOffer } from '../utils/media'
+import { createOffer, peerConnection } from '../utils/media'
 
 // media 相关 API
 // getSenders()

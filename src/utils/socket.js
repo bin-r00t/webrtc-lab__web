@@ -21,12 +21,18 @@ export const initSocket = (url, { token }, dispatch) => {
   socket.on("waiting", handleWaiting);
   socket.on("negotiation::start", () => {
     console.log("negotiation::start");
-    dispatch(setOfferCreator());
+    setTimeout(() => {
+      dispatch(setOfferCreator());
+    }, 1000);
   });
   return socket;
 };
 
-export function registerMoreEvents(socket) {}
+export function registerMoreEvents(socket) {
+  socket.on("offer", (offer) => {
+    console.log("[socket.js] received offer", offer);
+  });
+}
 
 function handleConnected() {
   console.log("connected");

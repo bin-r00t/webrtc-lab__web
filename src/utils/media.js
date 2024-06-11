@@ -33,7 +33,7 @@ export function setStream(source, stream) {
 }
 
 export function setPeerConnection(pc) {
-  console.log("setPeerConnection", pc);
+  console.log("[media.js] setPeerConnection", pc);
   peerConnection = pc;
 }
 
@@ -41,9 +41,9 @@ export async function createOffer() {
   if (peerConnection) {
     const offer = await peerConnection.createOffer();
     peerConnection.setLocalDescription(offer);
-    console.log("setLocalDescription", offer);
+    console.log("[media.js] setLocalDescription", offer);
     return offer;
   }
-  console.log("peerConnection is NULL");
+  console.log("[media.js] peerConnection is NULL");
   return null;
 }

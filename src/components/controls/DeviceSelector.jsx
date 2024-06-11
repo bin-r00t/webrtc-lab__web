@@ -8,7 +8,7 @@ export default function DeviceSelector() {
   const [audioOutputDevices, setAudioOutputDevices] = useState([]);
   useEffect(() => {
     async function initDevices() {
-      console.log("[Device Selectro] 初始化设备...");
+      console.log("[Device Selector] 初始化设备...");
       const { audio, video, audioOutput } = await getDevices();
       setAudioDevices(audio);
       setVideoDevices(video);

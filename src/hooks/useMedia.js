@@ -19,7 +19,18 @@ const configuration = {
 
 function useMedia(videoRef, socket) {
   console.log("[useMedia] socket--", socket);
-  const { role } = useSelector((state) => state.media);
+  const { role, offer } = useSelector((state) => state.media);
+
+  useEffect(() => {
+    if (offer) {
+      console.log("[useMedia] Emit offer...", offer);
+      if (socket.current) {
+        socket.current.emit("offer", offer);
+      } else {
+        console.log("[useMedia] Socket Cannot Emit, because it is NULL...");
+      }
+    }
+  }, [offer]);
 
   useEffect(() => {
     const initPeerConnection = async () => {
