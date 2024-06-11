@@ -5,6 +5,7 @@ import VideoWrapper from "./VideoWrapper";
 import VideoActions from "./Actions";
 import { initSocket } from "../../utils/socket";
 import { GlobalContext } from "../../App";
+import ParticipantsList from "./ParticipantsList";
 // import { initWebRtc } from "../peer.tools";
 // import { useDispatch, useSelector } from "react-redux";
 // import { setPeerConnection } from "../../store/index";
@@ -65,6 +66,7 @@ export default function Room() {
         <VideoWrapper />
         <VideoActions />
       </div>
+      <ParticipantsList />
       <Modal
         ref={dialogRef}
         show={!username.value}
