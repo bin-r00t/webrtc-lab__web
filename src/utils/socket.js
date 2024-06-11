@@ -1,4 +1,5 @@
 import { io } from "socket.io-client";
+import { setRole, setOfferCreator } from "../store/index";
 
 /**
  * 1. c ---> signal server 发现没有房间，创建房间 --> 通知 c1 你是 发起者；若发现有房间，则通知 c 你是加入者，并发送 offer
@@ -6,7 +7,7 @@ import { io } from "socket.io-client";
  * 3. c ---> c是加入者，向 signal server 发送 answer --> signal server 查看房间是否有人，有人则转发 answer，否则丢弃 answer，并返回 --> 告知失败
  */
 
-export const initSocket = (url, { token }) => {
+export const initSocket = (url, { token }, dispatch) => {
   const socket = io(url, {
     auth: {
       token,
@@ -17,17 +18,15 @@ export const initSocket = (url, { token }) => {
   socket.on("connect", handleConnected);
   socket.on("disconnect", handleDisconnected);
   socket.on("error", handleError);
+  socket.on("waiting", handleWaiting);
   socket.on("negotiation::start", () => {
     console.log("negotiation::start");
+    dispatch(setOfferCreator());
   });
-  // socket.on("negotiation::start", handleStartNegotiation.bind(socket));
-  socket.on("waiting", handleWaiting.bind(socket));
   return socket;
 };
 
-function dispatch(str) {
-  return str;
-}
+export function registerMoreEvents(socket) {}
 
 function handleConnected() {
   console.log("connected");
@@ -41,10 +40,6 @@ function handleError(error) {
   console.error("Error", error);
 }
 
-function handleJoinRoom(room) {
-  console.log("join room", room);
-}
-
 export async function handleStartNegotiation(socket, pc) {
   console.log("start negotiation", socket);
   const offer = await pc.createOffer();
@@ -53,5 +48,5 @@ export async function handleStartNegotiation(socket, pc) {
 }
 
 function handleWaiting() {
-  console.log("waiting");
+  console.log("waiting for participant(s)");
 }

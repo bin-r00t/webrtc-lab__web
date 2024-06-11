@@ -22,45 +22,20 @@ import {
   ArrowDownTrayIcon,
 } from "@heroicons/react/24/solid";
 //
-import { useEffect, useRef, useState } from "react";
-import { initWebRtc } from "../peer.tools";
-import { useDispatch, useSelector } from "react-redux";
-import { handleStartNegotiation } from "../../utils/socket";
 import { useContext } from "react";
 import { GlobalContext } from "../../App";
+import useMedia from "../../hooks/useMedia";
 
-export default function Room({}) {
+export default function VideoWrapper({}) {
   const { localVideoRef, remoteVideoRef, socket } = useContext(GlobalContext);
-  const localStream = useRef();
-  const remoteStream = useRef();
-
-  useEffect(() => {
-    setTimeout(() => {
-      console.log("localVideoRef", localVideoRef.current);
-      console.log("remoteVideoRef", remoteVideoRef.current);
-    }, 2000);
-    async function prepare() {
-      // peerConnection cannot be saved to redux store
-      // dispatch(setPeerConnection(peerConnection)); is NOT allowed
-      const peerConnection = await initWebRtc({
-        ref: localVideoRef,
-        stream: null,
-      });
-      console.log("socket", socket);
-      // TODO：此处而言， negotiation::start 注册太晚了... 在 socket.js 中注册又太早
-      socket.current.on("negotiation::start", () => {
-        console.log("start negotiation");
-      });
-
-      console.log("peerConnection -->", peerConnection);
-    }
-    prepare();
-  }, []);
+  // 初始化 peer connection
+  console.log('[VideoWrapper] ', socket);
+  useMedia(localVideoRef, socket);
 
   function togglePlay() {
-    selfVideoRef.current.paused
-      ? selfVideoRef.current.play()
-      : selfVideoRef.current.pause();
+    localVideoRef.current.paused
+      ? localVideoRef.current.play()
+      : localVideoRef.current.pause();
   }
   return (
     <section className="main-area flex-1 flex justify-center items-center gap-10">

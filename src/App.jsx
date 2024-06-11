@@ -17,6 +17,7 @@ function App() {
   const remoteVideoRef = useRef(null);
   // helper functions
   const saveSocket = useCallback(function saveSocket(s) {
+    console.log('[App] save socket', s);
     socket.current = s;
   }, []);
   // const loadLocalVideo = useCallback(function loadLocalVideo(stream) {})

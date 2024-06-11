@@ -2,7 +2,7 @@
 
 // variables - those variables cannot be put into redux
 // let remoteStream = null;
-let peerConnection = null;
+export let peerConnection = null;
 let localStream = null;
 let remoteStreams = [];
 
@@ -33,5 +33,17 @@ export function setStream(source, stream) {
 }
 
 export function setPeerConnection(pc) {
+  console.log("setPeerConnection", pc);
   peerConnection = pc;
+}
+
+export async function createOffer() {
+  if (peerConnection) {
+    const offer = await peerConnection.createOffer();
+    peerConnection.setLocalDescription(offer);
+    console.log("setLocalDescription", offer);
+    return offer;
+  }
+  console.log("peerConnection is NULL");
+  return null;
 }

@@ -3,14 +3,13 @@ import { useEffect, useRef, useState, useContext } from "react";
 import { Modal } from "../../components/Modal";
 import VideoWrapper from "./VideoWrapper";
 import VideoActions from "./Actions";
-import { initSocket } from "../../utils/socket";
+import { initSocket, registerMoreEvents } from "../../utils/socket";
 import { GlobalContext } from "../../App";
 import ParticipantsList from "./ParticipantsList";
-// import { initWebRtc } from "../peer.tools";
-// import { useDispatch, useSelector } from "react-redux";
-// import { setPeerConnection } from "../../store/index";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Room() {
+  const dispatch = useDispatch();
   const { socket, saveSocket } = useContext(GlobalContext);
   const { roomId } = useParams();
   const dialogRef = useRef();
@@ -24,13 +23,13 @@ export default function Room() {
     if (username.value == "") {
       dialogRef.current.open();
     }
-    saveSocket(initSocket("https://10.168.1.141:8000", { token: roomId }));
-
-    // async function prepare() {
-    //   const peerConnection = await initWebRtc();
-    //   dispatch(setPeerConnection(peerConnection));
-    // }
-    // prepare();
+    const socket = initSocket(
+      "https://10.168.1.141:8000",
+      { token: roomId },
+      dispatch
+    );
+    registerMoreEvents(socket);
+    saveSocket(socket);
   }, []);
 
   function handleSetName() {

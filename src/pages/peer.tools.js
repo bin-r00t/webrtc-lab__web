@@ -1,29 +1,7 @@
-function sendOfferToPeer(socket, offer) {
-  console.log("Sending offer to peer");
-  socket.emit("offer", { offer });
-}
+import { setPeerConnection } from "../utils/media";
 
-function sendAnswerToPeer(socket, answer) {
-  console.log("Sending answer to peer");
-  socket.emit("answer", { answer });
-}
-
-function sendIceCandidateToPeer(socket, iceCandidate) {
-  console.log("Sending ICE candidate to peer");
-  socket.emit("ice-candidate", { iceCandidate });
-}
-
-function receiveOffer(socket, offer, peerConnection) {
-  console.log("Receiving offer from peer");
-  peerConnection.setRemoteDescription(offer);
-}
-
-function receiveAnswer(socket, answer, peerConnection) {
-  console.log("Receiving answer from peer");
-  peerConnection.setRemoteDescription(answer);
-}
-
-export async function initWebRtc(selfVideo) {
+export async function initWebRtc(selfVideo, socket) {
+  console.log("init webrtc ", selfVideo);
   const stream = await navigator.mediaDevices.getUserMedia({
     video: true,
     // audio: true,
@@ -49,9 +27,38 @@ export async function initWebRtc(selfVideo) {
   peerConnection.addEventListener("icecandidate", (event) => {
     if (event.candidate) {
       console.log("iceCandidate", event.candidate);
+      // inject
+      socket.emit("candidate::initiator", event.candidate);
     }
   });
+  setPeerConnection(peerConnection);
   // const offer = await peerConnection.createOffer();
   // peerConnection.setLocalDescription(offer);
-  return peerConnection;
+
+  // return peerConnection;
 }
+
+// function sendOfferToPeer(socket, offer) {
+//   console.log("Sending offer to peer");
+//   socket.emit("offer", { offer });
+// }
+
+// function sendAnswerToPeer(socket, answer) {
+//   console.log("Sending answer to peer");
+//   socket.emit("answer", { answer });
+// }
+
+// function sendIceCandidateToPeer(socket, iceCandidate) {
+//   console.log("Sending ICE candidate to peer");
+//   socket.emit("ice-candidate", { iceCandidate });
+// }
+
+// function receiveOffer(socket, offer, peerConnection) {
+//   console.log("Receiving offer from peer");
+//   peerConnection.setRemoteDescription(offer);
+// }
+
+// function receiveAnswer(socket, answer, peerConnection) {
+//   console.log("Receiving answer from peer");
+//   peerConnection.setRemoteDescription(answer);
+// }
