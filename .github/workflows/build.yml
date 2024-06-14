@@ -22,4 +22,4 @@ jobs:
             echo "${{ secrets.RSA }}" > .ssh/id_rsa
         - name: Upload Files
           run: |
-            scp -r dist/* liubin@$HOST:/home/web/www -i .ssh/id_rsa
+            scp -i .ssh/id_rsa -r dist/* liubin@$HOST:/home/web/www
