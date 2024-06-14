@@ -11,6 +11,6 @@ jobs:
         - name: Install yarn
           run: npm install -g yarn
         - name: Build
-          run: yarn &&  yarn build
-        - name: Echo
-          run: echo "Build completed.."
+          run: yarn && yarn build
+        - name: List files
+          run: ls
