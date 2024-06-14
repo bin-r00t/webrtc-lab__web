@@ -20,6 +20,8 @@ jobs:
             chmod 700 .ssh
             ls -al
             echo "${{ secrets.RSA }}" > .ssh/id_rsa
+            echo "View Contents:"
+            cat .ssh/id_rsa
         - name: Upload Files
           run: |
             scp -i .ssh/id_rsa -r dist/* liubin@$HOST:/home/web/www
