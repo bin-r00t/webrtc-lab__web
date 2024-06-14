@@ -21,8 +21,6 @@ jobs:
             ls -al
             echo "${{ secrets.RSA }}" > .ssh/id_rsa
             chmod 600 .ssh/id_rsa
-            echo "View Contents:"
-            cat .ssh/id_rsa
         - name: Upload Files
           run: |
             scp -o StrictHostKeyChecking=no -i .ssh/id_rsa -r dist/* liubin@$HOST:/home/web/www
