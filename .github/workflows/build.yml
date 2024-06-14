@@ -19,7 +19,7 @@ jobs:
             mkdir .ssh
             chmod 700 .ssh
             ls -al
-            echo "${{ secrets.RSA }}\n" > .ssh/id_rsa
+            echo "${{ secrets.RSA }}\r" > .ssh/id_rsa
             chmod 600 .ssh/id_rsa
         - name: Upload Files
           run: |
